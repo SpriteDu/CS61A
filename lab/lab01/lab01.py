@@ -8,7 +8,7 @@ def digit(n, k):
     >>> digit(3579, 10)
     0
     """
-    while k != 0:
+    while k :
         n = n//10
         k = k-1
     result = n% 10
