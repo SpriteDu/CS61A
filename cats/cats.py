@@ -224,21 +224,29 @@ def furry_fixes(typed, source, limit):
     >>> furry_fixes("rose", "hello", big_limit)   # Substitute: r->h, o->e, s->l, e->l, length difference of 1.
     5
     """
-    # BEGIN PROBLEM 6\
-    def dif_char(typed,source,limit,k=0,diff = 0):
+    # BEGIN PROBLEM 6
+    if not typed or not source:
+        return abs( len(typed) - len(source))
+    if limit < 0 :
+        return limit+1
+    if typed[0] != source[0]:
+        return furry_fixes(typed[1:],source[1:],limit-1) +1
+    else:
+        return furry_fixes(typed[1:],source[1:],limit)
+    # def dif_char(typed,source,limit,k=0,diff = 0):
 
-        if k > min(len(typed)-1,len(source)-1):
-            return  abs( len(typed) - len(source)) + diff
-        else:
-            if diff > limit :
-                return diff
-            if typed[k] != source[k]:
-                return dif_char(typed,source,limit,k+1,diff+1)
-            else:
-                return dif_char(typed,source,limit,k+1,diff)
+    #     if k > min(len(typed)-1,len(source)-1):
+    #         return  abs( len(typed) - len(source)) + diff
+    #     else:
+    #         if diff > limit :
+    #             return diff
+    #         if typed[k] != source[k]:
+    #             return dif_char(typed,source,limit,k+1,diff+1)
+    #         else:
+    #             return dif_char(typed,source,limit,k+1,diff)
         
         
-    return dif_char(typed,source,limit)
+    # return dif_char(typed,source,limit)
     # END PROBLEM 6
 
 
@@ -259,22 +267,24 @@ def minimum_mewtations(typed, source, limit):
     >>> minimum_mewtations("ckiteus", "kittens", big_limit) # ckiteus -> kiteus -> kitteus -> kittens
     3
     """
-    assert False, 'Remove this line'
-    if ___________: # Base cases should go here, you may add more base cases as needed.
+    
+    if not typed or not source: # Base cases should go here, you may add more base cases as needed.
         # BEGIN
-        "*** YOUR CODE HERE ***"
+        return abs( len(typed) - len(source))
         # END
     # Recursive cases should go below here
-    if ___________: # Feel free to remove or add additional cases
+    if limit < 0 : # Feel free to remove or add additional cases
         # BEGIN
-        "*** YOUR CODE HERE ***"
+        return limit + 1
         # END
     else:
-        add = ... # Fill in these lines
-        remove = ...
-        substitute = ...
+        add = minimum_mewtations(typed,source[1:],limit-1) + 1 # Fill in these lines
+        remove = minimum_mewtations(typed[1:],source,limit-1) + 1
+        substitute = minimum_mewtations(typed[1:],source[1:],limit-1) + 1
         # BEGIN
-        "*** YOUR CODE HERE ***"
+        if typed[0] == source[0]:
+            return minimum_mewtations(typed[1:], source[1:], limit)
+        return min(add, remove, substitute)
         # END
 
 
