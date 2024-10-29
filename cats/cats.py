@@ -37,7 +37,11 @@ def pick(paragraphs, select, k):
     ''
     """
     # BEGIN PROBLEM 1
-    "*** YOUR CODE HERE ***"
+    result = [p for p in paragraphs if select(p)]
+    if k < len(result):
+        return result[k]
+    else:
+        return ''
     # END PROBLEM 1
 
 
@@ -57,7 +61,16 @@ def about(subject):
     assert all([lower(x) == x for x in subject]), "subjects should be lowercase."
 
     # BEGIN PROBLEM 2
-    "*** YOUR CODE HERE ***"
+    def fun(paragraph):
+        paragraph = paragraph.lower()
+        paragraph = remove_punctuation(paragraph)
+        paragraph_list = paragraph.split()
+        for s in subject:
+            if s in paragraph_list:
+                return True
+        return False
+    return fun
+
     # END PROBLEM 2
 
 
@@ -87,7 +100,19 @@ def accuracy(typed, source):
     typed_words = split(typed)
     source_words = split(source)
     # BEGIN PROBLEM 3
-    "*** YOUR CODE HERE ***"
+    if len(typed_words) == 0 and len(source_words) ==0:
+        return 100.0
+    elif len(typed_words) ==0 and len(source_words) !=0:
+        return 0.0
+    len_s = min(len(typed_words,len(source_words)))
+    same_count = 0
+    for i in range(len_s):
+        if typed_words[i] == source_words[i]:
+            same_count = same_count+1
+
+    return same_count/len(typed_words) *100.0
+    
+    
     # END PROBLEM 3
 
 
@@ -105,7 +130,7 @@ def wpm(typed, elapsed):
     """
     assert elapsed > 0, "Elapsed time must be positive"
     # BEGIN PROBLEM 4
-    "*** YOUR CODE HERE ***"
+    return len(typed)*(60/5)/elapsed
     # END PROBLEM 4
 
 
@@ -166,7 +191,14 @@ def autocorrect(typed_word, word_list, diff_function, limit):
     'testing'
     """
     # BEGIN PROBLEM 5
-    "*** YOUR CODE HERE ***"
+    if typed_word in word_list:
+        return typed_word
+    diff = [ diff_function(typed_word,w,limit) for w in word_list]
+    min_diff = min(diff)
+    if min_diff <= limit:
+        index = diff.index(min_diff)
+        typed_word = word_list[index]
+    return typed_word
     # END PROBLEM 5
 
 
@@ -192,8 +224,21 @@ def furry_fixes(typed, source, limit):
     >>> furry_fixes("rose", "hello", big_limit)   # Substitute: r->h, o->e, s->l, e->l, length difference of 1.
     5
     """
-    # BEGIN PROBLEM 6
-    assert False, 'Remove this line'
+    # BEGIN PROBLEM 6\
+    def dif_char(typed,source,limit,k=0,diff = 0):
+
+        if k > min(len(typed)-1,len(source)-1):
+            return  abs( len(typed) - len(source)) + diff
+        else:
+            if diff > limit :
+                return diff
+            if typed[k] != source[k]:
+                return dif_char(typed,source,limit,k+1,diff+1)
+            else:
+                return dif_char(typed,source,limit,k+1,diff)
+        
+        
+    return dif_char(typed,source,limit)
     # END PROBLEM 6
 
 
