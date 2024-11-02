@@ -160,17 +160,26 @@ def memo_diff(diff_function):
 
     def memoized(typed, source, limit):
         # BEGIN PROBLEM EC
-        "*** YOUR CODE HERE ***"
+        key = (typed, source)
+        # Check if the key is already in the cache
+        if key not in cache:
+            result = diff_function(typed, source, limit)
+            cache[key] = (result,limit)
+        else: # key exist
+            result,cached_limit = cache[key]
+            if cached_limit < limit: # exist but limit un match
+                result = diff_function(typed, source, limit)
+                cache[key] = (result,limit)
+        #check the newst cache and return
+        return cache[key][0]
         # END PROBLEM EC
-
     return memoized
-
 
 ###########
 # Phase 2 #
 ###########
 
-
+@memo
 def autocorrect(typed_word, word_list, diff_function, limit):
     """Returns the element of WORD_LIST that has the smallest difference
     from TYPED_WORD based on DIFF_FUNCTION. If multiple words are tied for the smallest difference,
@@ -249,7 +258,7 @@ def furry_fixes(typed, source, limit):
     # return dif_char(typed,source,limit)
     # END PROBLEM 6
 
-
+@memo_diff
 def minimum_mewtations(typed, source, limit):
     """A diff function for autocorrect that computes the edit distance from TYPED to SOURCE.
     This function takes in a string TYPED, a string SOURCE, and a number LIMIT.
@@ -277,13 +286,18 @@ def minimum_mewtations(typed, source, limit):
         # BEGIN
         return limit + 1
         # END
+    elif limit == 0:
+        return int(typed!=source)
+    elif typed == source:
+        return 0
+    elif typed[0] == source[0]:
+        return minimum_mewtations(typed[1:], source[1:], limit)
+
     else:
+        # BEGIN
         add = minimum_mewtations(typed,source[1:],limit-1) + 1 # Fill in these lines
         remove = minimum_mewtations(typed[1:],source,limit-1) + 1
         substitute = minimum_mewtations(typed[1:],source[1:],limit-1) + 1
-        # BEGIN
-        if typed[0] == source[0]:
-            return minimum_mewtations(typed[1:], source[1:], limit)
         return min(add, remove, substitute)
         # END
 
