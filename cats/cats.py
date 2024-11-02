@@ -104,7 +104,7 @@ def accuracy(typed, source):
         return 100.0
     elif len(typed_words) ==0 and len(source_words) !=0:
         return 0.0
-    len_s = min(len(typed_words,len(source_words)))
+    len_s = min(len(typed_words),len(source_words))
     same_count = 0
     for i in range(len_s):
         if typed_words[i] == source_words[i]:
@@ -330,7 +330,15 @@ def report_progress(typed, source, user_id, upload):
     0.2
     """
     # BEGIN PROBLEM 8
-    "*** YOUR CODE HERE ***"
+    progress = 0.0
+    for i in range(len(typed)):
+        if typed[i] == source[i]:
+            progress = progress+1
+        else:
+            break
+    progress = progress/len(source)
+    upload({'id': user_id, 'progress': progress})
+    return progress
     # END PROBLEM 8
 
 
@@ -354,7 +362,8 @@ def time_per_word(words, timestamps_per_player):
     """
     tpp = timestamps_per_player  # A shorter name (for convenience)
     # BEGIN PROBLEM 9
-    times = []  # You may remove this line
+    times = [ [itpp[i+1]-itpp[i] for i in range(len(itpp)-1)] for itpp in tpp]  # You may remove this line
+
     # END PROBLEM 9
     return {'words': words, 'times': times}
 
@@ -381,7 +390,19 @@ def fastest_words(words_and_times):
     player_indices = range(len(times))  # contains an *index* for each player
     word_indices = range(len(words))    # contains an *index* for each word
     # BEGIN PROBLEM 10
-    "*** YOUR CODE HERE ***"
+    list=[[] for _ in player_indices]
+    for w in word_indices:
+        t = [inner[w] for inner in times]
+        index_p = t.index(min(t))
+        list[index_p].append(words[w])
+    return list
+    
+    
+    # for i in player_indices:
+    #     s = [inner[1] for inner in times]
+    #     index = s.index(min(s))
+
+
     # END PROBLEM 10
 
 
