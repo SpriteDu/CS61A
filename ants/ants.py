@@ -165,62 +165,28 @@ class ThrowerAnt(Ant):
     food_cost = 3
     # ADD/OVERRIDE CLASS ATTRIBUTES HERE
 
-    # def nearest_bee(self):
-    #     """Return the nearest Bee in a Place (that is not the hive) connected to
-    #     the ThrowerAnt's Place by following entrances.
-
-    #     This method returns None if there is no such Bee (or none in range).
-    #     """
-    #     # BEGIN Problem 3 and 4
-    #     next = self.place
-    #     flag = True
-    #     if next.bees:
-    #         flag = False
-    #         return random_bee(next.bees)
-        
-    #     while flag:
-    #         next = next.entrance
-    #         if   next.is_hive or next is None :
-    #             # print(next.name, "is hive")
-    #             return None
-    #         if next.bees:
-    #             # print("bee found in :" ,next.name)
-    #             return random_bee(next.bees)
-    #     return None
-
-    #     while next is not None:
-    #         if next.
-    #     # return random_bee(self.place.bees) # REPLACE THIS LINE
-
-    #     # END Problem 3 and 4
-
-
-
     def nearest_bee(self):
         """Return the nearest Bee in a Place (that is not the hive) connected to
         the ThrowerAnt's Place by following entrances.
 
         This method returns None if there is no such Bee (or none in range).
         """
-        next_place = self.place  # Start at the current place
-
-        while next_place is not None:
-                        # Stop if we reach the hive (indicated by no further entrance)
-            if next_place is None or next_place.is_hive:
-                return None
-            # Check if the current place has bees
-            if next_place.bees:
-                return random_bee(next_place.bees)  # Return a random bee from this place
-            
-            # Move to the next entrance
-            next_place = next_place.entrance
-
-
-
-        # If no bees are found in range
-        return None
-
+        # BEGIN Problem 3 and 4
+        next = self.place
+        flag = True
+        if next.bees:
+            flag = False
+            return random_bee(next.bees)
         
+        while flag:
+            next = next.entrance
+            if   next.is_hive or next is None :
+                # print(next.name, "is hive")
+                return None
+            if next.bees:
+                # print("bee found in :" ,next.name)
+                return random_bee(next.bees)
+        return None 
 
     def throw_at(self, target):
         """Throw a leaf at the target Bee, reducing its health."""
