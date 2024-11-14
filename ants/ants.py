@@ -101,6 +101,7 @@ class Ant(Insect):
     food_cost = 0
     is_container = False
     damage_doubled = False
+    blocks_path = True
     # ADD CLASS ATTRIBUTES HERE
 
     def __init__(self, health=1):
@@ -528,7 +529,9 @@ class ScaryThrower(ThrowerAnt):
 
     def throw_at(self, target):
         # BEGIN Problem EC 2
-        "*** YOUR CODE HERE ***"
+        if not hasattr(target,'scared'):
+            target.scared = True
+            target.back_length = 2
         # END Problem EC 2
 
 
@@ -540,12 +543,15 @@ class NinjaAnt(Ant):
     food_cost = 5
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem EC 3
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
+    blocks_path = False
     # END Problem EC 3
 
     def action(self, gamestate):
         # BEGIN Problem EC 3
         "*** YOUR CODE HERE ***"
+        for bee in self.place.bees[:]:
+            bee.reduce_health(self.damage)
         # END Problem EC 3
 
 
@@ -556,7 +562,8 @@ class LaserAnt(ThrowerAnt):
     food_cost = 10
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem EC 4
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
+    damage = 2
     # END Problem EC 4
 
     def __init__(self, health=1):
@@ -565,12 +572,23 @@ class LaserAnt(ThrowerAnt):
 
     def insects_in_front(self):
         # BEGIN Problem EC 4
-        return {}
+        place = self.place
+        iif ={}
+        distance = 0
+        while not place.is_hive:
+            for bee in place.bees[:]:
+                iif[bee] = distance
+            if place.ant and place.ant is not self:
+                iif[place.ant] = distance
+            distance += 1
+            place = place.entrance
+        return iif
         # END Problem EC 4
 
     def calculate_damage(self, distance):
         # BEGIN Problem EC 4
-        return 0
+        # print(max(self.damage - distance*0.25 - self.insects_shot*0.0625,0) )
+        return max(self.damage - distance*0.25 - self.insects_shot*0.0625,0) 
         # END Problem EC 4
 
     def action(self, gamestate):
@@ -607,7 +625,7 @@ class Bee(Insect):
         """Return True if this Bee cannot advance to the next Place."""
         # Special handling for NinjaAnt
         # BEGIN Problem EC 3
-        return self.place.ant is not None
+        return self.place.ant is not None and self.place.ant.blocks_path is True
         # END Problem EC 3
 
     def action(self, gamestate):
@@ -623,6 +641,8 @@ class Bee(Insect):
             self.sting(self.place.ant)
         elif self.health > 0 and destination is not None:
             self.move_to(destination)
+            self.scare(2)
+            
 
     def add_to(self, place):
         place.bees.append(self)
@@ -638,7 +658,15 @@ class Bee(Insect):
         go backwards LENGTH times.
         """
         # BEGIN Problem EC 2
-        "*** YOUR CODE HERE ***"
+        if hasattr(self, 'scared') and self.scared == True:
+            for _ in range(2):
+            # move two times as the original action has one move forward
+                if not self.place.entrance.is_hive:
+                    place_behind = self.place.entrance
+                    self.move_to(place_behind) 
+            self.back_length -= 1
+            if self.back_length == 0:
+                self.scared = False
         # END Problem EC 2
 
 
